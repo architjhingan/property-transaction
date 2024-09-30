@@ -90,16 +90,16 @@ def run_pipeline(input_file, output_file):
         (
                 p
                 | 'Read CSV' >> beam.Create([input_file])
-                | 'Flatten the CSV' >> beam.FlatMap(read_csv_file)
+                | 'Flatten the CSV' >> beam.FlatMap(read_csv_file)  # Reading CSV using generator for better memory efficiency
                 | 'Key by Property' >> beam.Map(transaction_by_property)
-                | 'Combine Transactions' >> beam.CombinePerKey(CombineTransactionsFn())
+                | 'Combine Transactions' >> beam.CombinePerKey(CombineTransactionsFn())   # Used CombinePerKey instead of groupbykey to make it more memory efficient.
                 | 'Convert to JSON' >> beam.Map(group_to_json)
                 | 'Write JSON' >> WriteToText(output_file, file_name_suffix='.json')
         )
 
-# Run the pipeline with input and output files
+
 if __name__ == '__main__':
-    input_file = 'pp-monthly.csv'
-    output_file = 'transformed'
+    input_file = 'pp-monthly.csv'  # update input file name
+    output_file = 'transformed'  # update output file name
     run_pipeline(input_file, output_file)
 
