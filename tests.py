@@ -84,7 +84,6 @@ class TestPipelineFunctions(unittest.TestCase):
             }
         ]
 
-        # Convert expected output to deserialized Python objects
         expected_output = [
             {
                 'PropertyID': generate_property_id(test_input[0]),
@@ -127,10 +126,9 @@ class TestPipelineFunctions(unittest.TestCase):
                     input_data
                     | 'Key by Property' >> beam.Map(transaction_by_property)
                     | 'Combine Transactions' >> beam.CombinePerKey(CombineTransactionsFn())
-                    | 'Convert to JSON' >> beam.Map(lambda x: json.loads(group_to_json(x)))  # Deserialize JSON
+                    | 'Convert to JSON' >> beam.Map(lambda x: json.loads(group_to_json(x)))  # JSON string
             )
 
-            # Compare the deserialized objects, not JSON strings
             assert_that(output, equal_to(expected_output))
 
 if __name__ == '__main__':
