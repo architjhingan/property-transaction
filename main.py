@@ -21,7 +21,7 @@ def read_csv_file(readable_file):
 
 
 def generate_property_id(transaction):
-    # We could use a combination of address, city, and zip code as a unique property ID
+    # We used combination of PAON and Postcode to generate unique property_id
     address = f"{transaction['Postcode']}-{transaction['PAON']}"
     property_id = hashlib.sha256(address.encode()).hexdigest()
     return property_id
